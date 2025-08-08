@@ -1,0 +1,29 @@
+[
+  {
+    "nom": "Zoya",
+    "regles": {
+      "AAOIFI": {
+        "Zoya": "Conforme",
+        "Wahed": "Non conforme"
+      },
+      "S&P": {
+        "Islamic": "Partiellement conforme"
+      }
+    },
+    "pourcentageHalal": 85,
+    "pourcentageNonHalal": 15
+  },
+  {
+    "nom": "Al Rajhi",
+    "regles": {
+      "AAOIFI": {
+        "Zoya": "Conforme"
+      },
+      "S&P": {
+        "Islamic": "Conforme"
+      }
+    },
+    "pourcentageHalal": 90,
+    "pourcentageNonHalal": 10
+  }
+]

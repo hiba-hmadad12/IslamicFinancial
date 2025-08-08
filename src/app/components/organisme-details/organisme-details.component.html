@@ -1,0 +1,30 @@
+<h2>Détails de l'organisme: {{ organisme?."nom" }}</h2>
+
+<div *ngIf="organisme">
+  <mat-accordion>
+    <mat-expansion-panel *ngFor="let regle of organisme?.regles">
+      <mat-expansion-panel-header>
+        {{ regle.nom }}
+      </mat-expansion-panel-header>
+      <p>{{ regle.description }}</p>
+      <p>Conforme AAOIFI: {{ regle.conformeAAOIFI }}</p>
+      <p>Conforme S&P: {{ regle.conformeSP }}</p>
+      <p>Taux Halal: {{ regle.tauxHalal }}%</p>
+      <p>Taux Non Halal: {{ regle.tauxNonHalal }}%</p>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+<div *ngIf="organisme">
+  <h2>{{ organisme."nom" }}</h2>
+
+  <canvas baseChart
+          [data]="pieChartData"
+          [labels]="pieChartLabels"
+          [chartType]="pieChartType"
+          [options]="pieChartOptions"
+          [legend]="pieChartLegend">
+  </canvas>
+
+
+</div>
+

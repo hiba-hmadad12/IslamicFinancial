@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NgIf, NgClass } from '@angular/common';
 
 @Component({
   selector: 'app-navbar',
-  imports: [MatToolbarModule],
+  standalone: true,
+  imports: [RouterLink, RouterLinkActive, NgClass],
   templateUrl: './navbar.component.html',
-  styleUrl: './navbar.component.scss'
+  styleUrls: ['./navbar.component.scss']
 })
 export class NavbarComponent {
-
+  open = false; // mobile menu
+  toggle() { this.open = !this.open; }
+  close() { this.open = false; }
 }

@@ -1,4 +1,19 @@
-<p>navbar works!</p>
-<mat-toolbar color="primary">
-  <span>📊 HalalInvest Explorer</span>
-</mat-toolbar>
+<header class="nav" role="navigation" aria-label="Primary">
+  <div class="nav__inner">
+    <a class="nav__brand" routerLink="/" (click)="close()">HalalInvest</a>
+
+    <!-- Mobile toggle -->
+    <button class="nav__toggle" type="button" aria-label="Menu" (click)="toggle()">
+      <span class="nav__bar"></span>
+      <span class="nav__bar"></span>
+      <span class="nav__bar"></span>
+    </button>
+
+    <!-- Links -->
+    <ul class="nav__links" [ngClass]="{ 'is-open': open }">
+      <li><a routerLink="/" routerLinkActive="active" (click)="close()" [routerLinkActiveOptions]="{exact:true}">Home</a></li>
+      <li><a routerLink="/graphs" routerLinkActive="active" (click)="close()">Graphs</a></li>
+      <li><a routerLink="/contact" routerLinkActive="active" (click)="close()">Contact</a></li>
+    </ul>
+  </div>
+</header>

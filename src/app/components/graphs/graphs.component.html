@@ -1,1 +1,35 @@
-talk to me baby
+<div class="table-wrap">
+  <table class="data-table">
+    <caption>Entreprises</caption>
+    <thead>
+      <tr>
+        <th>Nom de l'entreprise</th>
+        <th>Secteur</th>
+        <th>Pays</th>
+      </tr>
+    </thead>
+    <tbody>
+  <tr class="clickable-row"
+      (click)="goToDetails({ id: 1, name: 'BNP Paribas', sector: 'Bancaire', country: 'France' })">
+    <td>BNP Paribas</td><td>Bancaire</td><td>France</td>
+  </tr>
+  <tr class="clickable-row"
+      (click)="goToDetails({ id: 2, name: 'Société Générale', sector: 'Bancaire', country: 'France' })">
+    <td>Société Générale</td><td>Bancaire</td><td>France</td>
+  </tr>
+  <tr class="clickable-row"
+      (click)="goToDetails({ id: 3, name: 'Renault', sector: 'Automobile', country: 'France' })">
+    <td>Renault</td><td>Automobile</td><td>France</td>
+  </tr>
+  <tr class="clickable-row"
+      (click)="goToDetails({ id: 4, name: 'Siemens', sector: 'Technologie', country: 'Allemagne' })">
+    <td>Siemens</td><td>Technologie</td><td>Allemagne</td>
+  </tr>
+  <tr class="clickable-row"
+      (click)="goToDetails({ id: 5, name: 'Toyota', sector: 'Automobile', country: 'Japon' })">
+    <td>Toyota</td><td>Automobile</td><td>Japon</td>
+  </tr>
+</tbody>
+
+  </table>
+</div>

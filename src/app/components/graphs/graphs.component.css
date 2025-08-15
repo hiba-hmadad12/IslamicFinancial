@@ -1,0 +1,202 @@
+:host {
+  display: block;
+  padding: 24px 16px 48px;
+  background: radial-gradient(120% 120% at 0% 0%, #0b1220 0%, #0f172a 55%, #0b1220 100%);
+  color: #e2e8f0;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+}
+
+.page { max-width: 1100px; margin: 0 auto; }
+.page-header { margin-bottom: 16px; }
+.title { font-size: clamp(22px, 3vw, 32px); font-weight: 900; margin: 0 0 4px; }
+.subtitle { color: #94a3b8; margin: 0; }
+
+/* cards grid */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.company-card {
+  text-align: left;
+  border-radius: 14px;
+  padding: 14px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 12px 32px rgba(2,8,23,.25);
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  color: inherit;
+}
+.company-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(14,116,144,0.35);
+  box-shadow: 0 16px 36px rgba(2,8,23,.32);
+}
+
+.card-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.name { font-weight: 800; font-size: 16px; }
+.ticker { color: #a7f3d0; font-weight: 800; font-size: 12px; }
+.sector { color: #94a3b8; font-size: 13px; margin-top: 4px; }
+
+.badges { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px; border-radius: 999px; font-weight: 800; font-size: 12px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+}
+.badge.pass { color: #22c55e; border-color: rgba(34,197,94,.45); box-shadow: 0 0 8px rgba(34,197,94,.25) inset; }
+.badge.fail { color: #f87171; border-color: rgba(248,113,113,.45); box-shadow: 0 0 8px rgba(248,113,113,.2) inset; }
+
+/* modal */
+.modal-backdrop {
+  position: fixed; inset: 0;
+  background: rgba(2,8,23,.6);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+  z-index: 30;
+}
+.modal {
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  z-index: 31; padding: 16px;
+}
+.modal > * {
+  max-width: 960px; width: 100%;
+}
+.modal-header {
+  background: rgba(17,24,39,.92);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 14px 14px 0 0;
+  padding: 12px 14px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-title { display: flex; flex-direction: column; gap: 2px; }
+.modal-name { font-weight: 900; font-size: 16px; }
+.modal-ticker { font-size: 12px; color: #94a3b8; }
+
+.modal-close {
+  background: transparent; color: #94a3b8; border: 0; font-size: 18px; cursor: pointer;
+}
+.modal-close:hover { color: #e2e8f0; }
+
+.modal-content {
+  background: rgba(15,23,42,.92);
+  border: 1px solid rgba(255,255,255,.08);
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+  padding: 14px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  box-shadow: 0 24px 60px rgba(2,8,23,.45);
+}
+@media (max-width: 760px) {
+  .modal-content { grid-template-columns: 1fr; }
+}
+
+.method {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 12px;
+}
+.method-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.method-name { font-weight: 900; }
+.method-badge {
+  font-weight: 900; font-size: 12px; padding: 2px 8px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+}
+.method-badge.pass { color: #22c55e; border-color: rgba(34,197,94,.45); }
+.method-badge.fail { color: #f87171; border-color: rgba(248,113,113,.45); }
+
+.method-table { display: grid; gap: 6px; }
+.method-table .row { display: flex; justify-content: space-between; gap: 12px; }
+.method-table .row .muted { color: #94a3b8; margin-left: 6px; }
+
+.calc-note { color: #94a3b8; font-size: 12px; margin-top: 8px; }
+/* Wrapper pour défilement horizontal sur mobile */
+.table-wrap {
+  max-width: 1100px;
+  margin: 16px auto;
+  padding: 0 16px;
+  overflow-x: auto;          /* évite la casse sur petits écrans */
+}
+
+/* Table “glass” sombre */
+.data-table {
+  width: 100%;
+  border-collapse: separate; /* pour garder le radius */
+  border-spacing: 0;
+  color: #e2e8f0;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(8px) saturate(120%);
+  -webkit-backdrop-filter: blur(8px) saturate(120%);
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(2,8,23,.25);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+/* En-tête figé & lisible */
+.data-table thead th {
+  position: sticky; top: 0; z-index: 1;
+  text-align: left;
+  font-weight: 800;
+  font-size: 14px;
+  padding: 12px 14px;
+  background: rgba(17,24,39,.92);
+  color: #e2e8f0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Cellules */
+.data-table tbody td {
+  padding: 12px 14px;
+  font-size: 14px;
+  color: #cbd5e1;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  white-space: nowrap; /* évite les retours indésirables */
+}
+
+/* Coins arrondis visibles */
+.data-table thead th:first-child { border-top-left-radius: 12px; }
+.data-table thead th:last-child  { border-top-right-radius: 12px; }
+.data-table tbody tr:last-child td:first-child { border-bottom-left-radius: 12px; }
+.data-table tbody tr:last-child td:last-child  { border-bottom-right-radius: 12px; }
+
+/* Alternance + hover */
+.data-table tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.data-table tbody tr:hover { background: rgba(14,116,144,0.14); }
+
+/* Petites pastilles pour les secteurs */
+.data-table .tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  color: #a7f3d0;
+  background: rgba(14,116,144,.18);
+  border: 1px solid rgba(14,116,144,.35);
+}
+
+/* Légende optionnelle */
+.data-table caption {
+  caption-side: top;
+  text-align: left;
+  color: #94a3b8;
+  font-size: 13px;
+  padding: 8px 4px 6px;
+}
+
+/* Réduction sur très petits écrans */
+@media (max-width: 520px) {
+  .data-table thead th, .data-table tbody td { padding: 10px 12px; font-size: 13px; }
+}

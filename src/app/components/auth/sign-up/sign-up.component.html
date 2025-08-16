@@ -1,0 +1,53 @@
+<div class="auth">
+  <div class="card">
+    <h1 class="title">Create your account</h1>
+    <p class="muted">Front-end demo (HALALINV)</p>
+
+    @if (existsError) {
+      <div class="alert error">An account with this email already exists.</div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label class="field">
+        <span>Name</span>
+        <input type="text" formControlName="name" placeholder="Your name" />
+        @if (f.name.touched && f.name.invalid) {
+          <small class="error">Enter at least 2 characters</small>
+        }
+      </label>
+
+      <label class="field">
+        <span>Email</span>
+        <input type="email" formControlName="email" placeholder="you@example.com" />
+        @if (f.email.touched && f.email.invalid) {
+          <small class="error">Invalid email</small>
+        }
+      </label>
+
+      <div class="row">
+        <label class="field">
+          <span>Password</span>
+          <input type="password" formControlName="password" [formGroup]="pGroup" placeholder="••••••••" />
+          @if (pGroup.get('password')?.touched && pGroup.get('password')?.invalid) {
+            <small class="error">Min 6 characters</small>
+          }
+        </label>
+
+        <label class="field">
+          <span>Confirm</span>
+          <input type="password" formControlName="confirm" [formGroup]="pGroup" placeholder="••••••••" />
+          @if (pGroup.touched && pGroup.errors?.['mismatch']) {
+            <small class="error">Passwords don’t match</small>
+          }
+        </label>
+      </div>
+
+      <button class="btn" type="submit" [disabled]="form.invalid || submitting">
+        @if (!submitting) { Create account } @else { Creating… }
+      </button>
+
+      <p class="tiny muted">Already have an account? <a routerLink="/sign-in">Sign in</a></p>
+      <p class="tiny"><a routerLink="/">← Back home</a></p>
+    </form>
+  </div>
+</div>

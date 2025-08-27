@@ -1,0 +1,25 @@
+<div class="table-wrap">
+  <table class="data-table">
+    <caption>Entreprises</caption>
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Nom de l'entreprise</th>
+        <th>Secteur</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let c of companies; trackBy: trackById"
+          class="clickable-row"
+          (click)="goToDetails(c)">
+        <td>{{ c.id }}</td>
+        <td>{{ c.name }}</td>
+        <td>{{ c.sector }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="loading">Chargement…</div>
+  <div *ngIf="error">{{ error }}</div>
+</div>

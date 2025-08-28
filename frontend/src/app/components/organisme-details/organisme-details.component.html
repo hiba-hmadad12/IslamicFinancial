@@ -1,0 +1,50 @@
+<div class="details">
+  <h1 class="title">Organisme — Détails</h1>
+
+  @if (company;as c) {
+    <div class="header">
+      <div>
+        <div class="name">{{ c.name }}</div>
+        <div class="meta">{{ c.sector }} • {{ c.country }} • ID: {{ c.id }}</div>
+      </div>
+      <div class="scores">
+        <span class="pill" [class.pass]="zoyaOverall >= 50">Zoya: {{ zoyaOverall }}%</span>
+        <span class="pill" [class.pass]="rajhiOverall >= 50">Rajhi: {{ rajhiOverall }}%</span>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table class="rules-table">
+        <thead>
+          <tr>
+            <th>Règle HALALINV</th>
+            <th>Valeur entreprise</th>
+            <th>Critère Zoya</th>
+            <th>Statut Zoya</th>
+            <th>Critère Rajhi</th>
+            <th>Statut Rajhi</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of rules; track row.key) {
+            <tr>
+              <td>{{ row.label }}</td>
+              <td>
+                <div class="value">
+                  <strong>{{ percent(row.value) }}</strong>
+                  <div class="bar"><span [style.width.%]="row.value * 100"></span></div>
+                </div>
+              </td>
+              <td>≤ {{ percent(row.zoyaLimit) }}</td>
+              <td><span class="badge" [class.pass]="row.zoyaPass" [class.fail]="!row.zoyaPass">{{ yesNo(row.zoyaPass) }}</span></td>
+              <td>≤ {{ percent(row.rajhiLimit) }}</td>
+              <td><span class="badge" [class.pass]="row.rajhiPass" [class.fail]="!row.rajhiPass">{{ yesNo(row.rajhiPass) }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  } @else {
+    <p class="muted">Aucune donnée reçue. Utilisez l’ID <strong>{{ id }}</strong> pour charger depuis l’API.</p>
+  }
+</div>

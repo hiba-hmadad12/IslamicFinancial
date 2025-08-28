@@ -1,0 +1,38 @@
+<div class="auth">
+  @if (registered) {
+  <div class="alert success">Account created! Please sign in.</div>
+}
+
+  <div class="card">
+    <h1 class="title">Sign in</h1>
+    <p class="muted">Front-end demo (HALALINV)</p>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <label class="field">
+        <span>Email</span>
+        <input type="email" formControlName="email" placeholder="you@example.com" />
+        @if (form.controls['email'].touched && form.controls['email'].invalid) {
+          <small class="error">Email invalide</small>
+        }
+      </label>
+
+      <label class="field">
+        <span>Password</span>
+        <input type="password" formControlName="password" placeholder="••••••••" />
+        @if (form.controls['password'].touched && form.controls['password'].invalid) {
+          <small class="error">Mot de passe requis</small>
+        }
+      </label>
+
+      <button class="btn" type="submit" [disabled]="form.invalid || submitting">
+        @if (!submitting) { Sign in } @else { Signing in… }
+      </button>
+
+      <p class="tiny muted">Astuce: n’importe quel email/mot de passe fonctionne (demo locale).</p>
+    </form>
+
+    <p class="tiny margin-top-10">
+      <a routerLink="/">← Back home</a>
+    </p>
+  </div>
+</div>

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-sign-in',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink], // standalone imports
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.scss']
 })
@@ -14,8 +14,7 @@ export class SignInComponent {
   submitting = false;
   registered = false;
 
-  form: ReturnType<FormBuilder['group']>;
-
+  form: FormGroup;
   private redirectTo: string | null = null;
 
   constructor(
@@ -30,23 +29,31 @@ export class SignInComponent {
     });
 
     this.registered = this.route.snapshot.queryParamMap.get('registered') === '1';
-    
   }
 
-  async onSubmit() {
+  onSubmit() {
     if (this.form.invalid) return;
     this.submitting = true;
 
-    const ok = await this.auth.login(
-      this.form.value.email!,
-      this.form.value.password!
-    );
+    const request = {
+      email: this.form.value.email,
+      password: this.form.value.password,
+    };
 
-    this.submitting = false;
-    if (ok) {
-      await this.router.navigate([this.redirectTo || '/']);
-    } else {
-      alert('Login failed (demo).');
-    }
+    this.auth.login(request).subscribe({
+      next: (response: any) => {
+        this.submitting = false;
+        if (response && response.token) {
+          this.auth.saveToken(response.token); // Sauvegarde du JWT
+          this.router.navigate([this.redirectTo || '/']);
+        } else {
+          alert('Login failed: no token received.');
+        }
+      },
+      error: () => {
+        this.submitting = false;
+        alert('Login failed: invalid credentials.');
+      }
+    });
   }
 }

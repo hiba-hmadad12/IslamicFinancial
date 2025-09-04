@@ -1,38 +1,27 @@
-<div class="auth">
-  @if (registered) {
-  <div class="alert success">Account created! Please sign in.</div>
-}
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <h2>Sign in</h2>
 
-  <div class="card">
-    <h1 class="title">Sign in</h1>
-    <p class="muted">Front-end demo (HALALINV)</p>
+  <div *ngIf="justRegistered" class="alert alert-success">Account created. You can now sign in.</div>
+  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <label class="field">
-        <span>Email</span>
-        <input type="email" formControlName="email" placeholder="you@example.com" />
-        @if (form.controls['email'].touched && form.controls['email'].invalid) {
-          <small class="error">Email invalide</small>
-        }
-      </label>
+  <label>Email
+    <input type="email" formControlName="email" />
+  </label>
+  <small class="error" *ngIf="f['email'].touched && f['email'].invalid">
+    <span *ngIf="f['email'].errors?.['required']">Email is required.</span>
+    <span *ngIf="f['email'].errors?.['email']">Please enter a valid email.</span>
+  </small>
 
-      <label class="field">
-        <span>Password</span>
-        <input type="password" formControlName="password" placeholder="••••••••" />
-        @if (form.controls['password'].touched && form.controls['password'].invalid) {
-          <small class="error">Mot de passe requis</small>
-        }
-      </label>
+  <label>Password
+    <input type="password" formControlName="password" />
+  </label>
+  <small class="error" *ngIf="f['password'].touched && f['password'].invalid">
+    <span *ngIf="f['password'].errors?.['required']">Password is required.</span>
+  </small>
 
-      <button class="btn" type="submit" [disabled]="form.invalid || submitting">
-        @if (!submitting) { Sign in } @else { Signing in… }
-      </button>
+  <button type="submit" [disabled]="form.invalid || submitting">
+    {{ submitting ? 'Signing in...' : 'Sign in' }}
+  </button>
 
-      <p class="tiny muted">Astuce: n’importe quel email/mot de passe fonctionne (demo locale).</p>
-    </form>
-
-    <p class="tiny margin-top-10">
-      <a routerLink="/">← Back home</a>
-    </p>
-  </div>
-</div>
+  <p class="muted">Don’t have an account? <a routerLink="/sign-up">Create one</a></p>
+</form>

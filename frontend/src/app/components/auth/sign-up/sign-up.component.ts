@@ -1,14 +1,18 @@
 import { Component } from '@angular/core';
-import { ReactiveFormsModule, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import {
+  ReactiveFormsModule, FormBuilder, Validators,
+  AbstractControl, ValidationErrors, FormGroup, ValidatorFn
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { AuthService, RegisterRequest } from '../../../services/auth.service';
+import { firstValueFrom } from 'rxjs';
 
-function matchPasswordValidator(group: AbstractControl): ValidationErrors | null {
+const matchPasswordValidator: ValidatorFn = (group: AbstractControl): ValidationErrors | null => {
   const pwd = group.get('password')?.value;
   const confirm = group.get('confirm')?.value;
   return pwd && confirm && pwd !== confirm ? { mismatch: true } : null;
-}
+};
 
 @Component({
   selector: 'app-sign-up',
@@ -20,38 +24,57 @@ function matchPasswordValidator(group: AbstractControl): ValidationErrors | null
 export class SignUpComponent {
   submitting = false;
   existsError = false;
+  serverError: string | null = null;
 
-  form: any;
+  form: FormGroup;
 
   constructor(private fb: FormBuilder, private auth: AuthService, private router: Router) {
     this.form = this.fb.group({
-      name: ['', [Validators.required, Validators.minLength(2)]],
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: [''],
       email: ['', [Validators.required, Validators.email]],
-      passwords: this.fb.group({
-        password: ['', [Validators.required, Validators.minLength(6)]],
-        confirm: ['', Validators.required],
-      }, { validators: matchPasswordValidator }),
+      passwords: this.fb.group(
+        {
+          password: ['', [Validators.required, Validators.minLength(6)]],
+          confirm: ['', Validators.required],
+        },
+        { validators: matchPasswordValidator }
+      ),
     });
   }
 
   async onSubmit() {
     this.existsError = false;
-    if (this.form.invalid) return;
+    this.serverError = null;
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     this.submitting = true;
 
-    const { name, email, passwords } = this.form.value;
-    const res = this.auth.register(name!, email!, passwords!.password!);
+    const { firstName, lastName, email, passwords } = this.form.value as any;
 
-    this.submitting = false;
-    if (res.ok) {
-      // redirect to sign-in with a little success flag
-      this.router.navigate(['/sign-in'], { queryParams: { registered: 1 } });
-    } else if (res.reason === 'exists') {
-      this.existsError = true;
+    const payload: RegisterRequest = {
+      email,
+      password: passwords.password,
+      firstName,
+      lastName
+    };
+
+    try {
+      await firstValueFrom(this.auth.register(payload));
+      await this.router.navigate(['/sign-in'], { queryParams: { registered: 1 } });
+    } catch (err: any) {
+      if (err?.status === 409) this.existsError = true;          // email already taken
+      else this.serverError = 'Registration failed. Please try again.';
+      console.error(err);
+    } finally {
+      this.submitting = false;
     }
   }
 
   // helpers for template
   get f() { return this.form.controls; }
-  get pGroup() { return this.form.controls['passwords']; }
+  get pGroup() { return this.form.get('passwords') as FormGroup; }
 }

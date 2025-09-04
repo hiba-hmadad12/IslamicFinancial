@@ -1,7 +1,9 @@
 export class CompanyModel{
   id?: number;
   name?: string;
+  symbol?: string;
   sector?: string;
-  ticker?: string;
-  marketCap?: number;
+ country?: string;
 }
+
+ 

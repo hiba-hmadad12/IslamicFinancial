@@ -1,53 +1,50 @@
-<div class="auth">
-  <div class="card">
-    <h1 class="title">Create your account</h1>
-    <p class="muted">Front-end demo (HALALINV)</p>
+<!-- sign-up.component.html -->
+<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <h2>Create your account</h2>
 
-    @if (existsError) {
-      <div class="alert error">An account with this email already exists.</div>
-    }
+  <div *ngIf="existsError" class="alert alert-warning">This email is already registered.</div>
+  <div *ngIf="serverError" class="alert alert-danger">{{ serverError }}</div>
 
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <label class="field">
-        <span>Name</span>
-        <input type="text" formControlName="name" placeholder="Your name" />
-        @if (f.name.touched && f.name.invalid) {
-          <small class="error">Enter at least 2 characters</small>
-        }
-      </label>
+  <label>First name
+    <input type="text" formControlName="firstName" />
+  </label>
+  <small class="error" *ngIf="f['firstName'].touched && f['firstName'].invalid">
+    <span *ngIf="f['firstName'].errors?.['required']">First name is required.</span>
+    <span *ngIf="f['firstName'].errors?.['minlength']">Min 2 characters.</span>
+  </small>
 
-      <label class="field">
-        <span>Email</span>
-        <input type="email" formControlName="email" placeholder="you@example.com" />
-        @if (f.email.touched && f.email.invalid) {
-          <small class="error">Invalid email</small>
-        }
-      </label>
+  <label>Last name
+    <input type="text" formControlName="lastName" />
+  </label>
 
-      <div class="row">
-        <label class="field">
-          <span>Password</span>
-          <input type="password" formControlName="password" [formGroup]="pGroup" placeholder="••••••••" />
-          @if (pGroup.get('password')?.touched && pGroup.get('password')?.invalid) {
-            <small class="error">Min 6 characters</small>
-          }
-        </label>
+  <label>Email
+    <input type="email" formControlName="email" />
+  </label>
+  <small class="error" *ngIf="f['email'].touched && f['email'].invalid">
+    <span *ngIf="f['email'].errors?.['required']">Email is required.</span>
+    <span *ngIf="f['email'].errors?.['email']">Please enter a valid email.</span>
+  </small>
 
-        <label class="field">
-          <span>Confirm</span>
-          <input type="password" formControlName="confirm" [formGroup]="pGroup" placeholder="••••••••" />
-          @if (pGroup.touched && pGroup.errors?.['mismatch']) {
-            <small class="error">Passwords don’t match</small>
-          }
-        </label>
-      </div>
+  <div [formGroup]="pGroup">
+    <label>Password
+      <input type="password" formControlName="password" />
+    </label>
+    <small class="error" *ngIf="pGroup.get('password')?.touched && pGroup.get('password')?.invalid">
+      <span *ngIf="pGroup.get('password')?.errors?.['required']">Password is required.</span>
+      <span *ngIf="pGroup.get('password')?.errors?.['minlength']">Min 6 characters.</span>
+    </small>
 
-      <button class="btn" type="submit" [disabled]="form.invalid || submitting">
-        @if (!submitting) { Create account } @else { Creating… }
-      </button>
-
-      <p class="tiny muted">Already have an account? <a routerLink="/sign-in">Sign in</a></p>
-      <p class="tiny"><a routerLink="/">← Back home</a></p>
-    </form>
+    <label>Confirm password
+      <input type="password" formControlName="confirm" />
+    </label>
+    <small class="error" *ngIf="pGroup.touched && pGroup.errors?.['mismatch']">
+      Passwords do not match.
+    </small>
   </div>
-</div>
+
+  <button type="submit" [disabled]="form.invalid || submitting">
+    {{ submitting ? 'Creating...' : 'Create account' }}
+  </button>
+
+  <p class="muted">Already have an account? <a routerLink="/sign-in">Sign in</a></p>
+</form>

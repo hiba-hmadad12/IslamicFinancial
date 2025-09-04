@@ -1,25 +1,52 @@
 <div class="table-wrap">
-  <table class="data-table">
-    <caption>Companies</caption>
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Nom de l'entreprise</th>
-        <th>Secteur</th>
-      </tr>
-    </thead>
+  <!-- barre titre + action admin -->
+  <div class="table-toolbar">
+    <h2>Companies</h2>
+    <button *ngIf="isAdmin$ | async" type="button" (click)="addCompany()" class="btn-primary">
+      + Add company
+    </button>
+  </div>
 
-    <tbody>
-      <tr *ngFor="let c of companies; trackBy: trackById"
-          class="clickable-row"
-          (click)="goToDetails(c)">
-        <td>{{ c.id }}</td>
-        <td>{{ c.name }}</td>
-        <td>{{ c.sector }}</td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- contenu -->
+  <ng-container *ngIf="!loading && !error; else loadingOrError">
+    <table class="data-table" *ngIf="companies?.length; else emptyState">
+      <caption class="sr-only">Companies</caption>
+      <thead>
+        <tr>
+          <th>Nom de l'entreprise</th>
+          <th>Secteur</th>
+          <th>Pays</th>
+          <th>Symbole</th>
+        </tr>
+      </thead>
 
-  <div *ngIf="loading">Chargement…</div>
-  <div *ngIf="error">{{ error }}</div>
+      <tbody>
+        <tr *ngFor="let c of companies; trackBy: trackById">
+          <td>
+            <!-- lien accessible vers le détail -->
+            <a
+              [routerLink]="['/organisme-details', c.id]"
+              [state]="{ company: c }"
+              (click)="$event.stopPropagation()"
+            >
+              {{ c.name }}
+            </a>
+          </td>
+          <td>{{ c.sector || '—' }}</td>
+          <td>{{ c.country || '—' }}</td>
+          <td>{{ c.symbol }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+
+  <!-- états -->
+  <ng-template #loadingOrError>
+    <div *ngIf="loading">Chargement…</div>
+    <div *ngIf="!loading && error" class="error">{{ error }}</div>
+  </ng-template>
+
+  <ng-template #emptyState>
+    <div class="empty">Aucune entreprise pour le moment.</div>
+  </ng-template>
 </div>

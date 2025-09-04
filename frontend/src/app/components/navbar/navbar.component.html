@@ -4,19 +4,34 @@
 
     <!-- Mobile toggle -->
     <button class="nav__toggle" type="button" aria-label="Menu" (click)="toggle()">
-      <span class="nav__bar"></span>
-      <span class="nav__bar"></span>
-      <span class="nav__bar"></span>
+      <span class="nav__bar"></span><span class="nav__bar"></span><span class="nav__bar"></span>
     </button>
 
     <!-- Links -->
     <ul class="nav__links" [ngClass]="{ 'is-open': open }">
-      <li><a routerLink="/" routerLinkActive="active" (click)="close()" [routerLinkActiveOptions]="{exact:true}">Home</a></li>
-      <li><a routerLink="/graphs" routerLinkActive="active" (click)="close()">Graphs</a></li>
+      <!-- Always visible -->
+      <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="close()">Home</a></li>
       <li><a routerLink="/contact" routerLinkActive="active" (click)="close()">Contact</a></li>
       <li><a routerLink="/about" routerLinkActive="active" (click)="close()">About</a></li>
-      <li><a routerLink="/sign-in" routerLinkActive="active" (click)="close()">Sign in </a></li>
-      <li><a routerLink="/sign-up" routerLinkActive="active" (click)="close()">Sign up</a></li>
+
+      <!-- Only when signed IN -->
+      <li *ngIf="isLoggedIn$ | async">
+        <a routerLink="/graphs" routerLinkActive="active" (click)="close()">Graphs</a>
+      </li>
+      <li *ngIf="isLoggedIn$ | async" class="nav__user" (click)="close()">
+        <span *ngIf="user$ | async as u">Hi, {{ u.firstName || u.email }}</span>
+      </li>
+      <li *ngIf="isLoggedIn$ | async">
+        <button type="button" class="nav__signout" (click)="signOut()">Sign out</button>
+      </li>
+
+      <!-- Only when signed OUT -->
+      <li *ngIf="!(isLoggedIn$ | async)">
+        <a routerLink="/sign-in" routerLinkActive="active" (click)="close()">Sign in</a>
+      </li>
+      <li *ngIf="!(isLoggedIn$ | async)">
+        <a routerLink="/sign-up" routerLinkActive="active" (click)="close()">Sign up</a>
+      </li>
     </ul>
   </div>
 </header>

@@ -1,50 +1,72 @@
-<!-- sign-up.component.html -->
-<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-  <h2>Create your account</h2>
+<div class="auth">
+  <div class="card">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <h2>Create your account</h2>
 
-  <div *ngIf="existsError" class="alert alert-warning">This email is already registered.</div>
-  <div *ngIf="serverError" class="alert alert-danger">{{ serverError }}</div>
+      <!-- Alert messages -->
+      <div *ngIf="existsError" class="alert alert-warning">
+        This email is already registered.
+      </div>
+      <div *ngIf="serverError" class="alert alert-danger">
+        {{ serverError }}
+      </div>
 
-  <label>First name
-    <input type="text" formControlName="firstName" />
-  </label>
-  <small class="error" *ngIf="f['firstName'].touched && f['firstName'].invalid">
-    <span *ngIf="f['firstName'].errors?.['required']">First name is required.</span>
-    <span *ngIf="f['firstName'].errors?.['minlength']">Min 2 characters.</span>
-  </small>
+      <!-- First Name -->
+      <div class="field">
+        <span>First Name</span>
+        <input type="text" formControlName="firstName" placeholder="Enter first name" />
+        <small class="error" *ngIf="f['firstName'].touched && f['firstName'].invalid">
+          <span *ngIf="f['firstName'].errors?.['required']">First name is required.</span>
+          <span *ngIf="f['firstName'].errors?.['minlength']">Min 2 characters.</span>
+        </small>
+      </div>
 
-  <label>Last name
-    <input type="text" formControlName="lastName" />
-  </label>
+      <!-- Last Name -->
+      <div class="field">
+        <span>Last Name</span>
+        <input type="text" formControlName="lastName" placeholder="Enter last name" />
+      </div>
 
-  <label>Email
-    <input type="email" formControlName="email" />
-  </label>
-  <small class="error" *ngIf="f['email'].touched && f['email'].invalid">
-    <span *ngIf="f['email'].errors?.['required']">Email is required.</span>
-    <span *ngIf="f['email'].errors?.['email']">Please enter a valid email.</span>
-  </small>
+      <!-- Email -->
+      <div class="field">
+        <span>Email</span>
+        <input type="email" formControlName="email" placeholder="Enter your email" />
+        <small class="error" *ngIf="f['email'].touched && f['email'].invalid">
+          <span *ngIf="f['email'].errors?.['required']">Email is required.</span>
+          <span *ngIf="f['email'].errors?.['email']">Please enter a valid email.</span>
+        </small>
+      </div>
 
-  <div [formGroup]="pGroup">
-    <label>Password
-      <input type="password" formControlName="password" />
-    </label>
-    <small class="error" *ngIf="pGroup.get('password')?.touched && pGroup.get('password')?.invalid">
-      <span *ngIf="pGroup.get('password')?.errors?.['required']">Password is required.</span>
-      <span *ngIf="pGroup.get('password')?.errors?.['minlength']">Min 6 characters.</span>
-    </small>
+      <!-- Passwords Group -->
+      <div formGroupName="passwords">
+        <!-- Password -->
+        <div class="field">
+          <span>Password</span>
+          <input type="password" formControlName="password" placeholder="Enter password" />
+          <small class="error" *ngIf="pGroup.get('password')?.touched && pGroup.get('password')?.invalid">
+            <span *ngIf="pGroup.get('password')?.errors?.['required']">Password is required.</span>
+            <span *ngIf="pGroup.get('password')?.errors?.['minlength']">Min 6 characters.</span>
+          </small>
+        </div>
 
-    <label>Confirm password
-      <input type="password" formControlName="confirm" />
-    </label>
-    <small class="error" *ngIf="pGroup.touched && pGroup.errors?.['mismatch']">
-      Passwords do not match.
-    </small>
+        <!-- Confirm Password -->
+        <div class="field">
+          <span>Confirm Password</span>
+          <input type="password" formControlName="confirm" placeholder="Confirm password" />
+          <small class="error" *ngIf="pGroup.errors?.['mismatch'] && pGroup.get('confirm')?.touched">
+            Passwords do not match.
+          </small>
+        </div>
+      </div>
+
+    
+      <button class="btn" type="submit" [disabled]="form.invalid || submitting">
+        {{ submitting ? 'Creating...' : 'Create account' }}
+      </button>
+
+      <p class="muted">
+        Already have an account? <a routerLink="/sign-in">Sign in</a>
+      </p>
+    </form>
   </div>
-
-  <button type="submit" [disabled]="form.invalid || submitting">
-    {{ submitting ? 'Creating...' : 'Create account' }}
-  </button>
-
-  <p class="muted">Already have an account? <a routerLink="/sign-in">Sign in</a></p>
-</form>
+</div>

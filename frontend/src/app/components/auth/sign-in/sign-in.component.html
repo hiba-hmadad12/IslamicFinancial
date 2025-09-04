@@ -1,27 +1,41 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
-  <h2>Sign in</h2>
+<div class="auth">
+  <div class="card">
+    <h1 class="title">Sign in</h1>
+  
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+      <!-- Success / Error Alerts -->
+      <div *ngIf="justRegistered" class="alert alert-success">
+        Account created. You can now sign in.
+      </div>
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
-  <div *ngIf="justRegistered" class="alert alert-success">Account created. You can now sign in.</div>
-  <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+      <!-- Email Field -->
+      <label class="field">
+        <span>Email</span>
+        <input type="email" formControlName="email" placeholder="you@example.com" />
+        <small class="error" *ngIf="f['email'].touched && f['email'].invalid">
+          <span *ngIf="f['email'].errors?.['required']">Email is required.</span>
+          <span *ngIf="f['email'].errors?.['email']">Please enter a valid email.</span>
+        </small>
+      </label>
 
-  <label>Email
-    <input type="email" formControlName="email" />
-  </label>
-  <small class="error" *ngIf="f['email'].touched && f['email'].invalid">
-    <span *ngIf="f['email'].errors?.['required']">Email is required.</span>
-    <span *ngIf="f['email'].errors?.['email']">Please enter a valid email.</span>
-  </small>
+      <!-- Password Field -->
+      <label class="field">
+        <span>Password</span>
+        <input type="password" formControlName="password" placeholder="••••••••" />
+        <small class="error" *ngIf="f['password'].touched && f['password'].invalid">
+          <span *ngIf="f['password'].errors?.['required']">Password is required.</span>
+        </small>
+      </label>
 
-  <label>Password
-    <input type="password" formControlName="password" />
-  </label>
-  <small class="error" *ngIf="f['password'].touched && f['password'].invalid">
-    <span *ngIf="f['password'].errors?.['required']">Password is required.</span>
-  </small>
-
-  <button type="submit" [disabled]="form.invalid || submitting">
-    {{ submitting ? 'Signing in...' : 'Sign in' }}
-  </button>
-
-  <p class="muted">Don’t have an account? <a routerLink="/sign-up">Create one</a></p>
-</form>
+      <!-- Submit Button -->
+      <button class="btn" type="submit" [disabled]="form.invalid || submitting">
+        {{ submitting ? 'Signing in…' : 'Sign in' }}
+      </button>
+      
+      <p class="muted">
+        Don’t have an account? <a routerLink="/sign-up">Create one</a>
+      </p>
+    </form>
+  </div>
+</div>

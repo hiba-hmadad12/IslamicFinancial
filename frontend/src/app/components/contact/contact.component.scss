@@ -1,0 +1,79 @@
+:host {
+  display: block;
+  padding: 24px 16px 48px;
+  //background: radial-gradient(120% 120% at 0% 0%, #0f172aFF 0%, #0d2a66 55%, #0a1e40 100%);
+  background: radial-gradient(120% 120% at 0% 0%, #0b1220 0%, #0f172a 55%, #0b1220 100%);
+  color: #e2e8f0;
+  min-height: 100dvh;
+  box-sizing: border-box;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.contact-container {
+  max-width: 600px;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(173, 216, 230, 0.5); /* bleu clair */
+  border-radius: 14px;
+  padding: 32px;
+  box-shadow: 0 12px 32px rgba(2, 8, 23, .25);
+  backdrop-filter: blur(8px);
+}
+
+.contact-title {
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 900;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #a7f3d0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #cbd5e1;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(173, 216, 230, 0.4);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f1f5f9;
+  font-size: 14px;
+  transition: border 0.3s ease, background 0.3s ease;
+}
+
+input:focus,
+textarea:focus {
+  border-color: #38bdf8; /* bleu clair focus */
+  background: rgba(255, 255, 255, 0.12);
+  outline: none;
+}
+
+button {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  background: linear-gradient(90deg, rgba(14,116,144,.6), rgba(14,116,144,.4));
+  color: #e2e8f0;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: linear-gradient(90deg, rgba(14,116,144,.8), rgba(14,116,144,.6));
+  transform: translateY(-2px);
+}

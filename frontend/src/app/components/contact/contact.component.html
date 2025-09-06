@@ -1,0 +1,57 @@
+<div class="contact-container">
+    <h1>HalalInvest - Nous sommes là pour vous aider !</h1>
+    <p class="intro">
+      Vous avez une question, un avis ou une suggestion ?
+      Notre équipe vous répond dans les plus brefs délais.
+    </p>
+  
+    <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+  
+      <label>Qu’aimeriez-vous partager avec nous ? </label>
+      <select formControlName="sujet">
+        <option value="">-- Sélectionnez --</option>
+        <option value="avis">Donner un avis</option>
+  <!--      <option value="reclamation">Faire une réclamation</option>-->
+        <option value="question">Poser une question</option>
+      </select>
+  
+      <div class="row">
+        <div class="col">
+          <label>Prénom</label>
+          <input type="text" formControlName="prenom" placeholder="">
+        </div>
+        <div class="col">
+          <label>Nom de famille</label>
+          <input type="text" formControlName="nom" placeholder="">
+        </div>
+      </div>
+  
+      <label>Date de naissance</label>
+      <input type="date" formControlName="dateNaissance">
+  
+      <label>Adresse e-mail</label>
+      <input type="email" formControlName="email" placeholder="example@email.com">
+  
+      <div class="row">
+        <div class="col">
+          <label>Pays</label>
+          <select formControlName="pays">
+            <option value="">-- Sélectionnez --</option>
+            <option value="morocco">Maroc</option>
+            <option value="france">France</option>
+            <option value="espagne">Espagne</option>
+          </select>
+        </div>
+        <div class="col">
+          <label>Numéro de téléphone</label>
+          <input type="tel" formControlName="telephone" placeholder="(0XX) XXX XXXX">
+        </div>
+      </div>
+  
+      <label>Ville</label>
+      <input type="text" formControlName="ville" placeholder="">
+  
+      <button type="submit" [disabled]="contactForm.invalid">Envoyer</button>
+    </form>
+  </div>
+  

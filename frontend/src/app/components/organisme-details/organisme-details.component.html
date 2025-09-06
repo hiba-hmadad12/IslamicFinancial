@@ -1,50 +1,87 @@
 <div class="details">
-  <h1 class="title">Organisme — Détails</h1>
 
-  @if (company;as c) {
-    <div class="header">
-      <div>
-        <div class="name">{{ c.name }}</div>
-        <div class="meta">{{ c.sector }} • {{ c.country }} • ID: {{ c.id }}</div>
-      </div>
-      <div class="scores">
-        <span class="pill" [class.pass]="zoyaOverall >= 50">Zoya: {{ zoyaOverall }}%</span>
-        <span class="pill" [class.pass]="rajhiOverall >= 50">Rajhi: {{ rajhiOverall }}%</span>
+  <!-- Header -->
+  <div class="header">
+    <div>
+     <div class="name">
+  {{ company?.name || ('Organisme #' + companyId) }}
+  <span class="muted" *ngIf="company?.symbol">({{ company?.symbol }})</span>
+</div>
+
+      <div class="meta">
+        Source: {{ snapshot?.source || '—' }} ·
+        Fetched: {{ snapshot?.fetchedAt ? (snapshot?.fetchedAt | date:'medium') : '—' }}
       </div>
     </div>
 
-    <div class="table-wrap">
-      <table class="rules-table">
-        <thead>
-          <tr>
-            <th>Règle HALALINV</th>
-            <th>Valeur entreprise</th>
-            <th>Critère Zoya</th>
-            <th>Statut Zoya</th>
-            <th>Critère Rajhi</th>
-            <th>Statut Rajhi</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of rules; track row.key) {
-            <tr>
-              <td>{{ row.label }}</td>
-              <td>
-                <div class="value">
-                  <strong>{{ percent(row.value) }}</strong>
-                  <div class="bar"><span [style.width.%]="row.value * 100"></span></div>
-                </div>
-              </td>
-              <td>≤ {{ percent(row.zoyaLimit) }}</td>
-              <td><span class="badge" [class.pass]="row.zoyaPass" [class.fail]="!row.zoyaPass">{{ yesNo(row.zoyaPass) }}</span></td>
-              <td>≤ {{ percent(row.rajhiLimit) }}</td>
-              <td><span class="badge" [class.pass]="row.rajhiPass" [class.fail]="!row.rajhiPass">{{ yesNo(row.rajhiPass) }}</span></td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  } @else {
-    <p class="muted">Aucune donnée reçue. Utilisez l’ID <strong>{{ id }}</strong> pour charger depuis l’API.</p>
-  }
+    
+
+    <button (click)="refreshNow()" [disabled]="loading">
+      {{ loading ? '…' : '🔄 Refresh from ZOYA' }}
+    </button>
+  </div>
+
+  <!-- Tableau colonnes (une seule ligne de valeurs) -->
+  <div class="table-wrap" *ngIf="snapshot as s">
+    <table class="rules-table">
+      <thead>
+        <tr>
+          <th>Statut</th>
+          <th>Purification (AAOIFI)</th>
+          <th *ngIf="s.compliantRevenuePct !== undefined">Compliant revenue</th>
+          <th>Interest debt</th>
+          <th>Interest income</th>
+          <th>Cash &amp; interest</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr>
+          <!-- Statut -->
+          <td>
+            <span class="badge"
+                  [class.pass]="s.status === 'HALAL'"
+                  [class.fail]="s.status === 'HARAM'">
+              {{ s.status || 'UNKNOWN' }}
+            </span>
+          </td>
+
+          <!-- Purification -->
+          <td class="value">
+            <strong>{{ pct(s.purificationRatio) }}</strong>
+            <div class="bar"><span [style.width.%]="width(s.purificationRatio)"></span></div>
+          </td>
+
+          <!-- Compliant revenue (optionnel) -->
+          <td *ngIf="s.compliantRevenuePct !== undefined" class="value">
+            <strong>{{ pct(s.compliantRevenuePct) }}</strong>
+            <div class="bar"><span [style.width.%]="width(s.compliantRevenuePct)"></span></div>
+          </td>
+
+          <!-- Interest debt -->
+          <td class="value">
+            <strong>{{ pct(s.interestDebtPct) }}</strong>
+            <div class="bar"><span [style.width.%]="width(s.interestDebtPct)"></span></div>
+          </td>
+
+          <!-- Interest income -->
+          <td class="value">
+            <strong>{{ s.interestIncomePct == null ? 'N/A' : pct(s.interestIncomePct) }}</strong>
+            <div class="bar"><span [style.width.%]="width(s.interestIncomePct)"></span></div>
+          </td>
+
+          <!-- Cash & interest -->
+          <td class="value">
+            <strong>{{ pct(s.cashAndInterestPct) }}</strong>
+            <div class="bar"><span [style.width.%]="width(s.cashAndInterestPct)"></span></div>
+          </td>
+        </tr>
+
+        <!-- Notes -->
+       
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="!snapshot && !loading" class="note">Aucun snapshot disponible.</div>
 </div>

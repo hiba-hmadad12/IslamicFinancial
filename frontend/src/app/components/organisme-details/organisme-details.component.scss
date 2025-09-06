@@ -115,3 +115,23 @@
 @media (max-width: 520px) {
   .rules-table thead th, .rules-table tbody td { padding: 10px 12px; font-size: 13px; }
 }
+/* --- force proper table layout (fixes columns stacking) --- */
+.rules-table { 
+  display: table !important;
+  width: 100%;
+  border-collapse: separate; /* keep your rounded corners */
+  border-spacing: 0;
+  table-layout: auto;        /* or fixed if you prefer equal columns */
+}
+
+.rules-table thead { display: table-header-group !important; }
+.rules-table tbody { display: table-row-group !important; }
+.rules-table tr    { display: table-row !important; }
+.rules-table th,
+.rules-table td    { display: table-cell !important; vertical-align: top; }
+
+/* optional: give the status column a natural width */
+.rules-table th:first-child,
+.rules-table td:first-child { white-space: nowrap; width: 1%; }
+
+/* if a previous rule set td/th to block/flex/grid, the above overrides it */

@@ -1,9 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { Router, RouterLink, ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../services/auth.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-sign-in',
@@ -12,12 +12,14 @@ import { firstValueFrom } from 'rxjs';
   templateUrl: './sign-in.component.html',
   styleUrls: ['./sign-in.component.css']
 })
-export class SignInComponent {
-  form!: FormGroup;
-
+export class SignInComponent implements OnDestroy {
+  form: FormGroup;
   submitting = false;
   error: string | null = null;
   justRegistered = false;
+  /** ← la cible de redirection après login */
+  private returnUrl = '/';
+  private qpSub: Subscription;
 
   constructor(
     private fb: FormBuilder,
@@ -29,7 +31,21 @@ export class SignInComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
-    this.route.queryParamMap.subscribe(p => this.justRegistered = p.has('registered'));
+
+    // initialise returnUrl & registered
+    this.returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+    this.justRegistered = this.route.snapshot.queryParamMap.has('registered');
+
+    // garde à jour si les query params changent
+    this.qpSub = this.route.queryParamMap.subscribe(qp => {
+      const ru = qp.get('returnUrl');
+      if (ru) this.returnUrl = ru;
+      this.justRegistered = qp.has('registered');
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.qpSub?.unsubscribe();
   }
 
   async onSubmit() {
@@ -40,12 +56,13 @@ export class SignInComponent {
     }
     this.submitting = true;
 
-    const { email, password } = this.form.value as any;
+    const { email, password } = this.form.value as { email: string; password: string };
 
     try {
-      await firstValueFrom(this.auth.login(email, password)); // AuthService stores Basic token
-      await this.router.navigate(['/graphs']);             // change route as needed
-    } catch (err: any) {
+      await firstValueFrom(this.auth.login(email, password)); // stocke le Basic token
+      // ⬅️ redirige vers la page demandée initialement
+      await this.router.navigateByUrl(this.returnUrl);
+    } catch (err) {
       this.error = 'Invalid email or password';
       console.error(err);
     } finally {

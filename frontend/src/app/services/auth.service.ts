@@ -19,7 +19,11 @@ export class AuthService {
   private readonly key  = 'basicAuth';
   private readonly isBrowser: boolean;
 
+  /** CHANGEMENT #1: on dérive l'état d'auth depuis l'utilisateur (et pas juste le token) */
   currentUser$ = new BehaviorSubject<UserDto | null>(null);
+
+  /** Optionnel: savoir si la (re)validation au boot est finie */
+  readonly ready$ = new BehaviorSubject<boolean>(false);
 
   constructor(
     private http: HttpClient,
@@ -27,17 +31,26 @@ export class AuthService {
   ) {
     this.isBrowser = isPlatformBrowser(platformId);
 
-    // Only touch localStorage in the browser
     if (this.isBrowser) {
       const token = localStorage.getItem(this.key);
       if (token) {
-        this.http.get<UserDto>(`${this.base}/auth/me`, {
-          headers: new HttpHeaders({ Authorization: `Basic ${token}` })
-        }).subscribe({
-          next: u => this.currentUser$.next(u),
-          error: () => this.logout()
+        // Valide le token au démarrage (pas "connecté" tant que pas confirmé)
+        const headers = new HttpHeaders({ Authorization: `Basic ${token}` });
+        this.http.get<UserDto>(`${this.base}/auth/me`, { headers }).subscribe({
+          next: u => {
+            this.currentUser$.next(u);
+            this.ready$.next(true);
+          },
+          error: () => {
+            this.logout(false);     // purge silencieuse si invalide
+            this.ready$.next(true);
+          }
         });
+      } else {
+        this.ready$.next(true);
       }
+    } else {
+      this.ready$.next(true);
     }
   }
 
@@ -51,10 +64,11 @@ export class AuthService {
     const token = btoa(`${e}:${p}`);
     const headers = new HttpHeaders({ Authorization: `Basic ${token}` });
 
+    // On NE sauvegarde le token que si /auth/me réussit
     return this.http.get<UserDto>(`${this.base}/auth/me`, { headers }).pipe(
       tap(user => {
         if (this.isBrowser) {
-          localStorage.setItem(this.key, token);     // save only in browser
+          localStorage.setItem(this.key, token);
         }
         this.currentUser$.next(user);
       }),
@@ -62,16 +76,26 @@ export class AuthService {
     );
   }
 
-  logout() {
+  logout(withRedirect = false) {
     if (this.isBrowser) localStorage.removeItem(this.key);
     this.currentUser$.next(null);
+
+    // Redirection désactivée par défaut ici (on gérera plus tard côté guard/interceptor)
+    // if (withRedirect) { ... }
+  }
+
+  /** Header prêt à l'emploi pour d'autres services */
+  getAuthHeaders(): HttpHeaders | null {
+    const t = this.getBasicToken();
+    return t ? new HttpHeaders({ Authorization: `Basic ${t}` }) : null;
   }
 
   getBasicToken(): string | null {
     return this.isBrowser ? localStorage.getItem(this.key) : null;
   }
 
+  /** CHANGEMENT #2: "connecté" = utilisateur connu, pas seulement un token dans le storage */
   isLoggedIn(): boolean {
-    return !!this.getBasicToken();
+    return !!this.currentUser$.value;
   }
 }

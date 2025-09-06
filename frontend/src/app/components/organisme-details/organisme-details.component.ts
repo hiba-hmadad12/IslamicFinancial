@@ -1,98 +1,75 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { ActivatedRoute, Router, Navigation } from '@angular/router';
-import { isPlatformBrowser } from '@angular/common';
-import { PLATFORM_ID } from '@angular/core';
-
-/** ratios in decimals: 0.032 = 3.2% */
-type Ratios = { nonPermissibleRevenue: number; cash: number; debt: number; };
-type Company = { id: number; name: string; sector: string; country: string; ratios: Ratios; };
-type Thresholds = { revenue: number; cash: number; debt: number; };
-type RuleRow = {
-  key: 'revenue' | 'cash' | 'debt';
-  label: string;
-  value: number;
-  zoyaLimit: number; zoyaPass: boolean;
-  rajhiLimit: number; rajhiPass: boolean;
-};
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
+import { CompaniesService } from '../../services/companies.service';
+import { ScreeningSnapshot } from '../../models/snapshot.model';
+import { CompanyModel } from '../../models/companies.model';
 
 @Component({
   selector: 'app-organisme-details',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './organisme-details.component.html',
   styleUrls: ['./organisme-details.component.scss']
-  // ⛔ remove `imports: [NgFor, NgIf]` here (not needed)
 })
 export class OrganismeDetailsComponent implements OnInit {
-  id!: string | null;
-  company: Company | null = null;
-  rules: RuleRow[] = [];
-  zoyaOverall = 0;
-  rajhiOverall = 0;
+  companyId!: number;
 
-  private readonly ZOYA:  Thresholds = { revenue: 0.05, cash: 0.30, debt: 0.30 };
-  private readonly RAJHI: Thresholds = { revenue: 0.05, cash: 0.25, debt: 0.25 };
+  // NEW
+  company?: CompanyModel;
+  companyLoading = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+  snapshot?: ScreeningSnapshot;
+  loading = false;
+  error?: string;
+
+  constructor(private route: ActivatedRoute, private api: CompaniesService) {}
 
   ngOnInit(): void {
-    // 1) id from URL
-    this.id = this.route.snapshot.paramMap.get('id');
+    this.companyId = Number(this.route.snapshot.paramMap.get('id'));
 
-    // 2) SSR-safe read of navigation state (works only in browser)
-    let fromState: Partial<Company> | undefined;
-    if (isPlatformBrowser(this.platformId)) {
-      const nav: Navigation | null = this.router.getCurrentNavigation();
-      fromState = (nav?.extras?.state as { company?: Partial<Company> })?.company;
-    }
+    // NEW: charge les infos de la company (name, symbol)
+    this.loadCompany();
 
-    // 3) demo data by id (so refresh/direct link works)
-    const full = this.fallbackById(Number(this.id));
-    if (full) {
-      this.company = { ...full, ...(fromState ?? {}) };
-      this.rules = this.buildRules(this.company);
-      this.computeOverall();
-    }
+    // existant: charge le snapshot
+    this.loadLatest();
   }
 
-  private fallbackById(id: number): Company | null {
-    const map: Record<number, Company> = {
-      1: { id: 1, name: 'BNP Paribas', sector: 'Bancaire',   country: 'France',    ratios: { nonPermissibleRevenue: 0.032, cash: 0.18, debt: 0.22 } },
-      2: { id: 2, name: 'Société Générale', sector: 'Bancaire', country: 'France', ratios: { nonPermissibleRevenue: 0.028, cash: 0.20, debt: 0.29 } },
-      3: { id: 3, name: 'Renault', sector: 'Automobile',     country: 'France',    ratios: { nonPermissibleRevenue: 0.012, cash: 0.12, debt: 0.11 } },
-      4: { id: 4, name: 'Siemens', sector: 'Technologie',    country: 'Allemagne', ratios: { nonPermissibleRevenue: 0.008, cash: 0.28, debt: 0.27 } },
-      5: { id: 5, name: 'Toyota',  sector: 'Automobile',     country: 'Japon',     ratios: { nonPermissibleRevenue: 0.015, cash: 0.22, debt: 0.18 } },
-    };
-    return map[id] ?? null;
-  }
-
-  private buildRules(c: Company): RuleRow[] {
-    const r = c.ratios;
-    const mk = (key: RuleRow['key'], label: string, value: number): RuleRow => ({
-      key, label, value,
-      zoyaLimit: this.ZOYA[key === 'revenue' ? 'revenue' : key],
-      zoyaPass:  value <= this.ZOYA[key === 'revenue' ? 'revenue' : key],
-      rajhiLimit:this.RAJHI[key === 'revenue' ? 'revenue' : key],
-      rajhiPass: value <= this.RAJHI[key === 'revenue' ? 'revenue' : key],
+  // NEW
+  loadCompany(): void {
+    if (!this.companyId) return;
+    this.companyLoading = true;
+    this.api.getCompany(this.companyId).subscribe({
+      next: c => { this.company = c; this.companyLoading = false; },
+      error: () => { this.companyLoading = false; } // on laisse le fallback nom#id
     });
-    return [
-      mk('revenue', 'Revenus non conformes', r.nonPermissibleRevenue),
-      mk('cash',    'Ratio de trésorerie (cash)', r.cash),
-      mk('debt',    'Ratio d’endettement', r.debt),
-    ];
   }
 
-  private computeOverall() {
-    const score = (limitKey: 'zoyaLimit' | 'rajhiLimit') => {
-      const parts = this.rules.map(row => 1 - Math.min(1, row.value / row[limitKey]));
-      return Math.round((parts.reduce((a,b)=>a+b,0) / parts.length) * 100);
-    };
-    this.zoyaOverall = score('zoyaLimit');
-    this.rajhiOverall = score('rajhiLimit');
+  loadLatest(): void {
+    this.loading = true;
+    this.api.getLatestSnapshot(this.companyId, 'ZOYA').subscribe({
+      next: s => { this.snapshot = s; this.loading = false; },
+      error: () => { this.error = 'Aucun snapshot'; this.loading = false; }
+    });
   }
 
-  percent(x: number, d = 1) { return (x * 100).toFixed(d) + '%'; }
-  yesNo(b: boolean) { return b ? 'Pass' : 'Fail'; }
+  refreshNow(): void {
+    this.loading = true;
+    this.api.refreshSnapshot(this.companyId, 'ZOYA').subscribe({
+      next: s => { this.snapshot = s; this.loading = false; },
+      error: () => { this.error = 'Refresh échoué'; this.loading = false; }
+    });
+  }
+
+  // Helpers d'affichage
+  pct(x?: number | null): string {
+    if (x === null || x === undefined) return 'N/A';
+    return (x <= 1 ? x * 100 : x).toFixed(2) + ' %';
+  }
+
+  width(x?: number | null): number {
+    if (x === null || x === undefined) return 0;
+    const v = x <= 1 ? x * 100 : x;
+    return Math.max(0, Math.min(100, v));
+  }
 }

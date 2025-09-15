@@ -12,6 +12,10 @@ export class CompaniesService {
   constructor(private http: HttpClient) {}
 
   getCompanies(): Observable<CompanyModel[]> {
+    return this.http.get<CompanyModel[]>(this.apiUrl);
+  }
+
+  getCompaniesWithStatus(): Observable<CompanyModel[]> {
     return this.http.post<CompanyModel[]>('http://localhost:8080/api/zoya/companies', {});
   }
 

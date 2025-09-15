@@ -30,7 +30,7 @@ export class CompaniesComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.companiesSvc.getCompanies().subscribe({
+    this.companiesSvc.getCompaniesWithStatus().subscribe({
       next: (data) => {
         this.companies = data ?? [];
         this.loading = false;

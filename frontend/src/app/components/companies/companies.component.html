@@ -1,0 +1,49 @@
+<div class="table-wrap">
+  <!-- barre titre -->
+  <div class="table-toolbar">
+    <h2>Companies</h2>
+  </div>
+
+  <!-- contenu -->
+  <ng-container *ngIf="!loading && !error; else loadingOrError">
+    <table class="data-table" *ngIf="companies?.length; else emptyState">
+      <caption class="sr-only">list of companies</caption>
+      <thead>
+        <tr>
+          <th>Company name</th>
+          <th>Sector</th>
+          <th>Country</th>
+          <th>Symbol</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let company of companies; trackBy: trackById">
+          <td>
+            <!-- lien accessible vers le détail -->
+            <a
+              [routerLink]="['/organisme-details', company.id]"
+              [state]="{ company: company }"
+              (click)="$event.stopPropagation()"
+            >
+              {{ company.name }}
+            </a>
+          </td>
+          <td>{{ company.sector || '—' }}</td>
+          <td>{{ company.country || '—' }}</td>
+          <td><span class="ticker">{{ company.symbol }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </ng-container>
+
+  <!-- états -->
+  <ng-template #loadingOrError>
+    <div *ngIf="loading">Chargement…</div>
+    <div *ngIf="!loading && error" class="error">{{ error }}</div>
+  </ng-template>
+
+  <ng-template #emptyState>
+    <div class="empty">Aucune entreprise pour le moment.</div>
+  </ng-template>
+</div>

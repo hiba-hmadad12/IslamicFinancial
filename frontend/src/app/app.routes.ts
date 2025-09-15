@@ -1,42 +1,25 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
-import { authMatchGuard } from './guards/auth-match.guard';
 
 export const routes: Routes = [
-  // PUBLIC
-  { path: '',      loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent) },
+  { path: '', loadComponent: () => import('./components/home/home.component').then(m => m.HomeComponent) },
   { path: 'about', loadComponent: () => import('./components/about/about.component').then(m => m.AboutComponent) },
+  { path: 'organisme-details/:id', loadComponent: () => import('./components/organisme-details/organisme-details.component').then(m => m.OrganismeDetailsComponent), canActivate: [authGuard] },
+  { path: 'contact', loadComponent: () => import('./components/contact/contact.component').then(m => m.ContactComponent) },
+  { path: 'companies', loadComponent: () => import('./components/companies/companies.component').then(m => m.CompaniesComponent) },
+
   { path: 'sign-in', loadComponent: () => import('./components/auth/sign-in/sign-in.component').then(m => m.SignInComponent) },
   { path: 'sign-up', loadComponent: () => import('./components/auth/sign-up/sign-up.component').then(m => m.SignUpComponent) },
-  { path: 'contact', loadComponent: () => import('./components/contact/contact.component').then(m => m.ContactComponent) },
 
-  // PROTÉGÉ
-  {
-    path: 'organisme-details/:id',
-    canMatch:    [authMatchGuard],
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/organisme-details/organisme-details.component')
-        .then(m => m.OrganismeDetailsComponent)
-  },
-  {
-    path: 'graphs',
-    canMatch:    [authMatchGuard],
-    canActivate: [authGuard],
-    loadComponent: () =>
-      import('./components/graphs/graphs.component')
-        .then(m => m.GraphsComponent)
-  },
+  // 👇 protégé: nécessite être connecté
+  { path: 'graphs', canActivate: [authGuard], loadComponent: () => import('./components/graphs/graphs.component').then(m => m.GraphsComponent) },
 
-  // ADMIN
+  // 👇 admin only
   {
     path: 'companies/new',
-    canMatch:    [authMatchGuard],
-    canActivate: [authGuard, adminGuard],
-    loadComponent: () =>
-      import('./components/PersonalizeCompany/PersonalizeCompany.component')
-        .then(m => m.PersonalizeCompanyComponent)
+    canActivate: [adminGuard],
+    loadComponent: () => import('./components/PersonalizeCompany/PersonalizeCompany.component').then(m => m.PersonalizeCompanyComponent)
   },
 
   { path: '**', redirectTo: '' }

@@ -11,6 +11,7 @@
     <ul class="nav__links" [ngClass]="{ 'is-open': open }">
       <!-- Always visible -->
       <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" (click)="close()">Home</a></li>
+      <li><a routerLink="/companies" routerLinkActive="active" (click)="close()">Companies</a></li>
       <li><a routerLink="/contact" routerLinkActive="active" (click)="close()">Contact</a></li>
       <li><a routerLink="/about" routerLinkActive="active" (click)="close()">About</a></li>
 

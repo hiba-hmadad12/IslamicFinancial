@@ -3,7 +3,6 @@ export class CompanyModel{
   name?: string;
   symbol?: string;
   sector?: string;
- country?: string;
+  country?: string;
+  status?: string;
 }
-
-

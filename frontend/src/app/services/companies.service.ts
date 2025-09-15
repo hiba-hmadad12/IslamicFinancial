@@ -12,9 +12,9 @@ export class CompaniesService {
   constructor(private http: HttpClient) {}
 
   getCompanies(): Observable<CompanyModel[]> {
-    return this.http.get<CompanyModel[]>(this.apiUrl);
+    return this.http.post<CompanyModel[]>('http://localhost:8080/api/zoya/companies', {});
   }
- 
+
 
   getCompany(id: number): Observable<CompanyModel> {
     return this.http.get<CompanyModel>(`${this.apiUrl}/${id}`);

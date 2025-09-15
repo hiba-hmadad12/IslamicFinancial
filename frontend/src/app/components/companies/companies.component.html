@@ -10,15 +10,22 @@
       <caption class="sr-only">list of companies</caption>
       <thead>
         <tr>
+          <th>Status</th>
           <th>Company name</th>
           <th>Sector</th>
-          <th>Country</th>
           <th>Symbol</th>
         </tr>
       </thead>
 
       <tbody>
         <tr *ngFor="let company of companies; trackBy: trackById">
+          <td>
+            <span class="badge"
+                  [class.pass]="company.status === 'HALAL'"
+                  [class.fail]="company.status === 'HARAM'">
+              {{ company.status || '—' }}
+            </span>
+          </td>
           <td>
             <!-- lien accessible vers le détail -->
             <a
@@ -30,7 +37,6 @@
             </a>
           </td>
           <td>{{ company.sector || '—' }}</td>
-          <td>{{ company.country || '—' }}</td>
           <td><span class="ticker">{{ company.symbol }}</span></td>
         </tr>
       </tbody>

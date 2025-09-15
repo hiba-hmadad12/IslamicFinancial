@@ -1,0 +1,31 @@
+<div class="form-container">
+  <h2>Personalize</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <label>
+      Name
+      <input type="text" formControlName="name" placeholder="Company Name">
+    </label>
+
+    <label>
+      Symbol
+      <input type="text" formControlName="symbol" placeholder="Stock Symbol">
+    </label>
+
+    <label>
+      Sector
+      <input type="text" formControlName="sector" placeholder="Business Sector">
+    </label>
+
+    <label>
+      Country
+      <input type="text" formControlName="country" placeholder="Country">
+    </label>
+
+    <button type="submit" [disabled]="form.invalid || submitting">
+      {{ submitting ? 'Saving…' : 'Save' }}
+    </button>
+
+    <div *ngIf="error" class="error">{{ error }}</div>
+  </form>
+</div>

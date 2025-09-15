@@ -50,6 +50,9 @@ export class GraphsComponent implements OnInit {
     // change the route if your form path is different
     this.router.navigate(['/companies/new']);
   }
-
+  wishlist() {
+    this.router.navigate(['/companies/new']);
+  }
+  
   trackById(_i: number, c: CompanyModel) { return c.id; }
 }

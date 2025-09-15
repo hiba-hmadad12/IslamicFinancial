@@ -9,6 +9,7 @@ export const routes: Routes = [
   { path: 'about', loadComponent: () => import('./components/about/about.component').then(m => m.AboutComponent) },
   { path: 'sign-in', loadComponent: () => import('./components/auth/sign-in/sign-in.component').then(m => m.SignInComponent) },
   { path: 'sign-up', loadComponent: () => import('./components/auth/sign-up/sign-up.component').then(m => m.SignUpComponent) },
+  { path: 'contact', loadComponent: () => import('./components/contact/contact.component').then(m => m.ContactComponent) },
 
   // PROTÉGÉ
   {
@@ -34,8 +35,8 @@ export const routes: Routes = [
     canMatch:    [authMatchGuard],
     canActivate: [authGuard, adminGuard],
     loadComponent: () =>
-      import('./components/add-company/add-company.component')
-        .then(m => m.AddCompanyComponent)
+      import('./components/PersonalizeCompany/PersonalizeCompany.component')
+        .then(m => m.PersonalizeCompanyComponent)
   },
 
   { path: '**', redirectTo: '' }

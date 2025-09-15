@@ -2,9 +2,10 @@
   <!-- barre titre + action admin -->
   <div class="table-toolbar">
     <h2>Companies</h2>
-    <button *ngIf="isAdmin$ | async" type="button" (click)="addCompany()" class="btn-primary">
-      + Add company
-    </button>
+    <button *ngIf="isAdmin$ | async"type="button"(click)="wishlist()"class="btn-wishlist">
+  Wishlist
+</button>
+   
   </div>
 
   <!-- contenu -->
@@ -13,10 +14,10 @@
       <caption class="sr-only">Companies</caption>
       <thead>
         <tr>
-          <th>Nom de l'entreprise</th>
-          <th>Secteur</th>
-          <th>Pays</th>
-          <th>Symbole</th>
+          <th>Name</th>
+          <th>Sector</th>
+          <th>Country</th>
+          <th>Symbol</th>
         </tr>
       </thead>
 

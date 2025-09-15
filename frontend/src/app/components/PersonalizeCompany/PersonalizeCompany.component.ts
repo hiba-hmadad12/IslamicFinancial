@@ -1,4 +1,3 @@
-// pages/companies/add-company.component.ts
 import { Component } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -8,21 +7,12 @@ import { firstValueFrom } from 'rxjs';
 
 @Component({
   standalone: true,
-  selector: 'app-add-company',
+  selector: 'app-personalize-company',
   imports: [CommonModule, ReactiveFormsModule],
-  template: `
-    <h2>Add company</h2>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
-      <label>Nom<input formControlName="name"></label>
-      <label>Symbole<input formControlName="symbol"></label>
-      <label>Secteur<input formControlName="sector"></label>
-      <label>Pays<input formControlName="country"></label>
-      <button type="submit" [disabled]="form.invalid || submitting">{{ submitting ? 'Saving…' : 'Save' }}</button>
-      <div *ngIf="error" class="error">{{ error }}</div>
-    </form>
-  `,
+  templateUrl: './personalizecompany.component.html',
+  styleUrls: ['./personalizecompany.component.css'],
 })
-export class AddCompanyComponent {
+export class PersonalizeCompanyComponent {
   submitting = false;
   error: string | null = null;
 

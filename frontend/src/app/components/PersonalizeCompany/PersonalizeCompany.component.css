@@ -1,0 +1,81 @@
+/* Fond sombre global */
+:host {
+  display: block;
+  min-height: 100vh;
+  padding: 2rem;
+  background: radial-gradient(circle at top left, #0b1220 0%, #0f172a 55%, #0b1220 100%);
+  color: #e2e8f0;
+  font-family: Arial, sans-serif;
+}
+
+/* Centrer le formulaire */
+.form-container {
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 2rem;
+  background: #1e293b; /* léger contraste */
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Titre */
+h2 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #e2e8f0;
+}
+
+/* Formulaire et champs */
+form {
+  display: grid;
+  gap: 1rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  font-weight: 600;
+}
+
+input {
+  margin-top: 0.25rem;
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+input:focus {
+  border-color: #3b82f6;
+  outline: none;
+}
+
+/* Bouton */
+button {
+  padding: 0.75rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:disabled {
+  background-color: #94a3b8;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background-color: #2563eb;
+}
+
+/* Message d'erreur */
+.error {
+  margin-top: 0.5rem;
+  color: #f87171;
+  font-weight: 500;
+  text-align: center;
+}
